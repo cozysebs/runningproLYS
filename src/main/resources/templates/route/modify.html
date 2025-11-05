@@ -7,13 +7,12 @@
 <div layout:fragment="content">
     <div class="card">
         <div class="card-body">
-            <div class="card-title">코스 등록하기</div>
-            <form action="/route/register" method="post">
-                <input type="hidden" name="email" th:value="'abc@naver.com'">
-
+            <div class="card-title">코스 수정하기</div>
+            <form action="/route/modify" method="post">
+                <input type="hidden" name="id" th:value="${route.id}">
                 <div class="mb-3">
                     <label class="form-label">Title</label>
-                    <input type="text" name="title" class="form-control" placeholder="제목을 입력하세요.">
+                    <input type="text" name="title" class="form-control" th:value="${route.title}">
                 </div>
 
                 <div class="mb-3">
@@ -27,38 +26,37 @@
 
                 <div class="mb-3">
                     <label class="form-label">시</label>
-                    <input type="text" name="durationHr" class="form-control" placeholder="hr">
+                    <input type="text" name="durationHr" class="form-control" th:value="${route.durationHr}">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">분</label>
-                    <input type="text" name="durationMin" class="form-control" placeholder="min">
+                    <input type="text" name="durationMin" class="form-control" th:value="${route.durationMin}">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">초</label>
-                    <input type="text" name="durationS" class="form-control" placeholder="sec">
+                    <input type="text" name="durationS" class="form-control" th:value="${route.durationS}">
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">평균 심박수</label>
-                    <input type="text" name="heartRateAvg" class="form-control" placeholder="BPM">
+                    <input type="text" name="heartRateAvg" class="form-control" th:value="${route.heartRateAvg}">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">최대 심박수</label>
-                    <input type="text" name="heartRateMax" class="form-control" placeholder="BPM">
+                    <input type="text" name="heartRateMax" class="form-control" th:value="${route.heartRateMax}">
                 </div>
 
 
                 <div class="mb-3">
                     <label class="form-label">메모</label>
-                    <textarea name="description" class="form-control" rows="3"></textarea>
+                    <textarea name="description" class="form-control" rows="3">[[${route.description}]]</textarea>
                 </div>
 
 
                 <div class="mb-3">
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                    <button type="reset" class="btn btn-secondary">Reset</button>
-                    <a th:href="@{/board/list}">
-                        <button type="button" class="btn btn-info">List</button>
+                    <button type="submit" class="btn btn-primary">수정 완료</button>
+                    <a th:href="|@{/route/list}?${pageRequestDTO.getLink()}|">
+                        <button type="button" class="btn btn-info">목록</button>
                     </a>
                 </div>
             </form>

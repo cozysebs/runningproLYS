@@ -56,12 +56,18 @@ public class RouteServiceImpl implements RouteService {
 
     @Override
     public void updateRoute(RoutesDTO routesDTO) {
-
+        Routes routes = routeRepository.findById(routesDTO.getId()).orElse(null);
+        routes.change(routesDTO.getTitle(), routesDTO.getDifficulty(),
+                routesDTO.getDurationHr(), routesDTO.getDurationMin(),
+                routesDTO.getDurationS(), routesDTO.getHeartRateAvg(),
+                routesDTO.getHeartRateMax(), routesDTO.getDescription());
+        routeRepository.save(routes);
     }
 
     @Override
     public void deleteRoute(Long id) {
-
+        Routes routes = routeRepository.findById(id).orElse(null);
+        routeRepository.deleteById(id);
     }
 
     @Override

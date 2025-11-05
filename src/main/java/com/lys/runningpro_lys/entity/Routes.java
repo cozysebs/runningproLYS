@@ -81,4 +81,19 @@ public class Routes {
 
     //조회수 올리기
     public void updateViews(){ this.views = views+1; }
+
+    //게시물 update
+    //수정필요한 사항: title, difficulty, hr, min, s, avg, max, description.
+    public void change(String title, Difficulty difficulty,
+                       Integer durationHr, Integer durationMin, Integer durationS,
+                       Integer heartRateAvg, Integer heartRateMax, String description) {
+        this.title = title;
+        this.difficulty = difficulty;
+        this.durationHr = durationHr;
+        this.durationMin = durationMin;
+        this.durationS = durationS;
+        this.heartRateAvg = heartRateAvg;
+        this.heartRateMax = heartRateMax;
+        this.description = description;
+    }
 }
