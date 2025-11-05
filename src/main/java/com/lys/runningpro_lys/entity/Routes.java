@@ -67,7 +67,7 @@ public class Routes {
     private Double averageRating;
 
     @ColumnDefault(value = "0")
-    private Integer views;
+    private int views;
 
     @UpdateTimestamp
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -78,4 +78,7 @@ public class Routes {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name="updated_at")
     private LocalDateTime updatedDate;
+
+    //조회수 올리기
+    public void updateViews(){ this.views = views+1; }
 }

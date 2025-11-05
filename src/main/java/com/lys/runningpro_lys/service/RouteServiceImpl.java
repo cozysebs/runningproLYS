@@ -43,8 +43,15 @@ public class RouteServiceImpl implements RouteService {
     }
 
     @Override
-    public RoutesDTO findRouteById(Long id) {
-        return null;
+    public RoutesDTO findRouteById(Long id, Integer mode) {
+        Routes routes = routeRepository.findById(id).orElse(null);
+        if (mode == 1) {
+            routes.updateViews();
+            routeRepository.save(routes);
+        }
+        RoutesDTO routesDTO = entityToDto(routes);
+        //routesDTO.setAuthor(board.getMember().getUsername()); -> 필요할까?
+        return routesDTO;
     }
 
     @Override

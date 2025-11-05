@@ -42,7 +42,7 @@ public class RoutesDTO {
 
     private Integer heartRateAvg;
 
-    private Integer views;
+    private int views;
 
     private LocalDateTime createdDate;
 

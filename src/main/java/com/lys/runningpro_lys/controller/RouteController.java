@@ -46,4 +46,10 @@ public class RouteController {
         model.addAttribute("responseDTO", responseDTO);
         model.addAttribute("pageRequestDTO", pageRequestDTO);
     }
+
+    @GetMapping({"read", "modify"})
+    public void readRoute(Long id, Integer mode, PageRequestDTO pageRequestDTO, Model model) {
+        model.addAttribute("pageRequestDTO", pageRequestDTO);
+        model.addAttribute("route", routeService.findRouteById(id,mode));
+    }
 }

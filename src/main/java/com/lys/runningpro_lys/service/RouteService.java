@@ -12,7 +12,7 @@ public interface RouteService {
 
     List<RoutesDTO> findAllRoutes();
 
-    RoutesDTO findRouteById(Long id);
+    RoutesDTO findRouteById(Long id, Integer mode);
 
     void updateRoute(RoutesDTO routesDTO);
 

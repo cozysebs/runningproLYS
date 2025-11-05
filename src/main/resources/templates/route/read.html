@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout.html}">
+
+
+<div layout:fragment="content">
+    <div class="card">
+        <div class="card-body">
+            <div class="card-title">게시물 상세보기</div>
+
+            <div class="mb-3">
+                <label class="form-label">Title</label>
+                <input type="text" name="title" class="form-control" th:value="${route.title}" readonly>
+            </div>
+
+            <div class="mb-3">
+                <!--서버로 보낼 실제 데이터가 담길 숨겨진 입력란-->
+                <input type="hidden" id="dataInput" name="difficulty" value="">
+                <!--버튼 클릭 시 JS 함수 호출-->
+                <button type="button" onclick="setAndSubmit('HARD')" class="btn btn-primary">상</button>
+                <button type="button" onclick="setAndSubmit('MEDIUM')" class="btn btn-primary">중</button>
+                <button type="button" onclick="setAndSubmit('EASY')" class="btn btn-primary">하</button>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">시</label>
+                <input type="text" name="durationHr" class="form-control" th:value="${route.durationHr}" readonly>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">분</label>
+                <input type="text" name="durationMin" class="form-control" th:value="${route.durationMin}" readonly>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">초</label>
+                <input type="text" name="durationS" class="form-control" th:value="${route.durationS}" readonly>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">평균 심박수</label>
+                <input type="text" name="heartRateAvg" class="form-control" th:value="${route.heartRateAvg}" readonly>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">최대 심박수</label>
+                <input type="text" name="heartRateMax" class="form-control" th:value="${route.heartRateMax}" readonly>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">메모</label>
+                <textarea name="description" class="form-control" rows="3" readonly>[[${route.description}]]</textarea>
+            </div>
+
+
+            <!--이동 버튼-->
+            <div class="mb-3" th:with="link=${pageRequestDTO.getLink()}">
+                <button type="button" class="btn btn-info">공유하기</button>
+                <a th:href="|@{/route/list}?${link}|">
+                    <button type="button" class="btn btn-info">목록</button>
+                </a>
+                <a th:href="|@{/route/modify(id=${route.id}, mode=2)}&${link}|">
+                    <button type="button" class="btn btn-primary">수정하기</button>
+                </a>
+                <a th:href="@{/route/remove(id=${route.id})}">
+                    <button type="button" class="btn btn-danger">삭제하기</button>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+    function setAndSubmit(value) {
+        // 'dataInput'이라는 이름의 숨겨진 입력란에 값 설정
+        document.getElementById('dataInput').value = value;
+    }
+</script>
