@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h2>코스 등록하기</h2>
+    <form action="/route/register" method="post">
+        <input type="hidden" name="email" th:value="'abc@naver.com'">
+
+        <div class="mb-3">
+            <label class="form-label">Title</label>
+            <input type="text" name="title" class="form-control" placeholder="제목을 입력하세요.">
+        </div>
+
+        <div class="mb-3">
+            <!--서버로 보낼 실제 데이터가 담길 숨겨진 입력란-->
+            <input type="hidden" id="dataInput" name="difficulty" value="">
+            <!--버튼 클릭 시 JS 함수 호출-->
+            <button type="button" onclick="setAndSubmit('HARD')" class="btn btn-primary">상</button>
+            <button type="button" onclick="setAndSubmit('MEDIUM')" class="btn btn-primary">중</button>
+            <button type="button" onclick="setAndSubmit('EASY')" class="btn btn-primary">하</button>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">시</label>
+            <input type="text" name="durationHr" class="form-control" placeholder="hr">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">분</label>
+            <input type="text" name="durationMin" class="form-control" placeholder="min">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">초</label>
+            <input type="text" name="durationS" class="form-control" placeholder="sec">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">평균 심박수</label>
+            <input type="text" name="heartRateAvg" class="form-control" placeholder="BPM">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">최대 심박수</label>
+            <input type="text" name="heartRateMax" class="form-control" placeholder="BPM">
+        </div>
+
+
+        <div class="mb-3">
+            <label class="form-label">메모</label>
+            <textarea name="description" class="form-control" rows="3"></textarea>
+        </div>
+
+
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="reset" class="btn btn-secondary">Reset</button>
+            <a th:href="@{/board/list}">
+                <button type="button" class="btn btn-info">List</button>
+            </a>
+        </div>
+    </form>
+
+    <script>
+        function setAndSubmit(value) {
+            // 'dataInput'이라는 이름의 숨겨진 입력란에 값 설정
+            document.getElementById('dataInput').value = value;
+        }
+    </script>
+
+</body>
+</html>
