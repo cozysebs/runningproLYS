@@ -1,11 +1,14 @@
 package com.lys.runningpro_lys.dto;
 
+import com.lys.runningpro_lys.entity.BaseEntity;
 import com.lys.runningpro_lys.entity.Users;
 import com.lys.runningpro_lys.entity.fieldenum.Difficulty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -40,4 +43,8 @@ public class RoutesDTO {
     private Integer heartRateAvg;
 
     private Integer views;
+
+    private LocalDateTime createdDate;
+
+    private LocalDateTime updatedDate;
 }

@@ -1,5 +1,7 @@
 package com.lys.runningpro_lys.service;
 
+import com.lys.runningpro_lys.dto.PageRequestDTO;
+import com.lys.runningpro_lys.dto.PageResponseDTO;
 import com.lys.runningpro_lys.dto.RoutesDTO;
 import com.lys.runningpro_lys.entity.Routes;
 
@@ -15,6 +17,8 @@ public interface RouteService {
     void updateRoute(RoutesDTO routesDTO);
 
     void deleteRoute(Long id);
+
+    PageResponseDTO<RoutesDTO> getList(PageRequestDTO pageRequestDTO);
 
 
 
@@ -50,6 +54,8 @@ public interface RouteService {
                 .heartRateMax(routes.getHeartRateMax())
                 .heartRateAvg(routes.getHeartRateAvg())
                 .views(routes.getViews())
+                .createdDate(routes.getCreatedDate())
+                .updatedDate(routes.getUpdatedDate())
                 .build();
         return routesDTO;
     }

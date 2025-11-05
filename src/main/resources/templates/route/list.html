@@ -1,10 +1,82 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout.html}">
 
-</body>
-</html>
+
+<div layout:fragment="content">
+    <div class="card">
+        <!--검색-->
+        <!--세부사항 수정해야함. 지역, 거리, 난이도를 필터로 검색(and로 묶기)-->
+        <form action="/route/list" method="get">
+            <input type="hidden" name="size" th:value="${pageRequestDTO.size}">
+            <div class="col">
+                <div class="input-group mt-3 mb-lg-3">
+                    <div class="input-group-prepend">
+                        <select class="form-select" name="type">
+                            <option value="">----</option>
+                            <option th:selected="${pageRequestDTO.type=='t'}" value="t">제목</option>
+                        </select>
+                    </div>
+                    <input type="text" name="keyword" class="input-control" th:value="${pageRequestDTO.keyword}">
+                    <button class="btn btn-secondary searchBtn" type="submit">Search</button>
+                    <button class="btn btn-outline-secondary clearBtn" type="reset">Clear</button>
+                </div>
+            </div>
+        </form>
+
+        <!--게시판 목록보기-->
+        <div class="card-body">
+            <div class="card-title">게시판 목록보기</div>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">Title</th>
+                    <th scope="col">CreatedDate</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="route:${responseDTO.dtoList}">
+                    <td>
+                        <a th:href="|@{/route/read(id=${route.id},mode=1)}&${pageRequestDTO.getLink()}|">[[${route.title}]]</a>
+                    </td>
+                    <td th:text="${#temporals.format(route.createdDate, 'yyyy-MM-dd HH:mm:dd')}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!--페이지 버튼-->
+            <div class="float-end">
+                <ul class="pagination">
+                    <li class="page-item" th:if="${responseDTO.prev}">
+                        <a class="page-link" th:data-num="${responseDTO.start-1}">Previous</a>
+                    </li>
+                    <th:block th:each="i:${#numbers.sequence(responseDTO.start, responseDTO.end)}">
+                        <li th:class="${responseDTO.page==i}?'page-item actice':'page-item'">
+                            <a class="page-link" th:data-num="${i}">[[${i}]]</a>
+                        </li>
+                    </th:block>
+                    <li class="page-item" th:if="${responseDTO.next}">
+                        <a class="page-link" th:data-num="${responseDTO.end+1}">Next</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+    document.querySelector(".pagination").addEventListener("click", function (e) {
+        e.preventDefault()
+        e.stopPropagation()
+        const target = e.target
+        if(target.tagName !== 'A') {
+            return
+        }
+        const num = target.getAttribute("data-num")
+        const formObj = document.querySelector("form")
+        formObj.innerHTML += `<input type='hidden' name='page' value='${num}'>`
+        formObj.submit()
+    })
+</script>

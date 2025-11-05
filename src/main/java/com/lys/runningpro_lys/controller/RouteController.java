@@ -1,11 +1,14 @@
 package com.lys.runningpro_lys.controller;
 
 
+import com.lys.runningpro_lys.dto.PageRequestDTO;
+import com.lys.runningpro_lys.dto.PageResponseDTO;
 import com.lys.runningpro_lys.dto.RoutesDTO;
 import com.lys.runningpro_lys.service.RouteService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,5 +38,12 @@ public class RouteController {
             log.info("-----insert route error-----");
             return "redirect:/route/register";
         }
+    }
+
+    @GetMapping("list")
+    public void list(PageRequestDTO pageRequestDTO, Model model) {
+        PageResponseDTO<RoutesDTO> responseDTO = routeService.getList(pageRequestDTO);
+        model.addAttribute("responseDTO", responseDTO);
+        model.addAttribute("pageRequestDTO", pageRequestDTO);
     }
 }
