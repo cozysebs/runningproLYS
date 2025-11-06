@@ -27,7 +27,7 @@ public class Routes {
     @JoinColumn(name = "user_id")
     private Users users; // foreignKey -> Users의 id
 
-    @Column(nullable = false)
+    @ColumnDefault(value = "'NonTitle'")
     private String title;
 
     private String description;
@@ -54,10 +54,10 @@ public class Routes {
     @ColumnDefault(value = "0")
     private Integer durationS;
 
-    @Column(nullable = false, name = "heart_rate_max")
+    @Column(name = "heart_rate_max")
     private Integer heartRateMax;
 
-    @Column(nullable = false, name = "heart_rate_avg")
+    @Column(name = "heart_rate_avg")
     private Integer heartRateAvg;
 
     private String image;
