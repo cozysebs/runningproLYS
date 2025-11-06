@@ -22,6 +22,8 @@ public class QRoutes extends EntityPathBase<Routes> {
 
     public static final QRoutes routes = new QRoutes("routes");
 
+    public final StringPath address = createString("address");
+
     public final NumberPath<Double> averageRating = createNumber("averageRating", Double.class);
 
     public final DateTimePath<java.time.LocalDateTime> createdDate = createDateTime("createdDate", java.time.LocalDateTime.class);
@@ -30,7 +32,7 @@ public class QRoutes extends EntityPathBase<Routes> {
 
     public final EnumPath<com.lys.runningpro_lys.entity.fieldenum.Difficulty> difficulty = createEnum("difficulty", com.lys.runningpro_lys.entity.fieldenum.Difficulty.class);
 
-    public final NumberPath<Double> distance = createNumber("distance", Double.class);
+    public final NumberPath<Integer> distance = createNumber("distance", Integer.class);
 
     public final NumberPath<Integer> durationHr = createNumber("durationHr", Integer.class);
 
@@ -46,7 +48,9 @@ public class QRoutes extends EntityPathBase<Routes> {
 
     public final StringPath image = createString("image");
 
-    public final SimplePath<Object> routeData = createSimple("routeData", Object.class);
+    public final NumberPath<Double> lat = createNumber("lat", Double.class);
+
+    public final NumberPath<Double> lng = createNumber("lng", Double.class);
 
     public final StringPath title = createString("title");
 

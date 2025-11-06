@@ -32,11 +32,11 @@ public class Routes {
 
     private String description;
 
-    @Convert(converter = JsonConverter.class)
-    @Column(name = "route_data", columnDefinition = "json")
-    private Object routeData; // JSON 타입
-
-    private Double distance;
+    //Kakao Map 데이터로 입력됨.
+    private Integer distance;
+    private String address;
+    private Double lat;
+    private Double lng;
 
     @Enumerated(EnumType.STRING)
     @ColumnDefault(value = "'MEDIUM'")

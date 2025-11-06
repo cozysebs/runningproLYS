@@ -107,6 +107,7 @@
     var distanceOverlay; // 선의 거리정보를 표시할 커스텀오버레이 입니다
     var dots = {}; // 선이 그려지고 있을때 클릭할 때마다 클릭 지점과 거리를 표시하는 커스텀 오버레이 배열입니다.
     var totalDistanceValue = 0; // 총거리 저장용 변수
+    var geocoder = new kakao.maps.services.Geocoder();
 
 
     // 지도에 클릭 이벤트를 등록합니다
@@ -222,21 +223,64 @@
 
             var distance = Math.round(clickLine.getLength()), // 선의 총 거리를 계산합니다
             totalDistanceValue = distance;
-            console.log("총거리 저장됨: ", totalDistanceValue);
+            //console.log("총거리 저장됨: ", totalDistanceValue);
+
+            // 마지막 클릭 지점 좌표 (kakao.maps.LatLng)
+            var lastLatLng = path[path.length - 1];
+            var lat = lastLatLng.getLat();
+            var lng = lastLatLng.getLng();
+
+            // 좌표 -> 주소 변환 (coord2Address 사용)
+            geocoder.coord2Address(lng, lat, function(result, status) {
+                if (status === kakao.maps.services.Status.OK) {
+                    // result 배열의 첫 항목에 주소 정보가 있음
+                    var address = result[0].address ? result[0].address.address_name : '';
+                    //console.log("변환된 주소:", address);
+
+                    // 서버로 전송 (fetch)
+                    var payload = {
+                        distance: totalDistanceValue,
+                        address: address,
+                        lat: lat,
+                        lng: lng
+                    };
+
+                    console.log("위도:", lat);
+                    console.log("경도:", lng);
+                    console.log("변환된 주소:", address);
+                    console.log("총거리 저장됨: ", totalDistanceValue);
+
+                    fetch('/route/saveMapData', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    })
+                    .then(res => {
+                    if(!res.ok) throw new Error('서버 응답 에러: ' + res.status);
+                    return res.json();
+                    })
+                    .then(data => {
+                    console.log('서버 저장 완료', data);
+                    })
+                    .catch(err => console.error('저장 중 오류:', err));
+
+                }else{
+                    console.warn("주소 변환 실패:", status);
+                }
+            });
+
 
             content = getTimeHTML(distance); // 커스텀오버레이에 추가될 내용입니다
-
-            // 그려진 선의 거리정보를 지도에 표시합니다
-            showDistance(content, path[path.length-1]);
+            showDistance(content, path[path.length-1]); // 그려진 선의 거리정보를 지도에 표시합니다
 
         } else {
-
             // 선을 구성하는 좌표의 개수가 1개 이하이면
             // 지도에 표시되고 있는 선과 정보들을 지도에서 제거합니다.
             deleteClickLine();
             deleteCircleDot();
             deleteDistnce();
-
         }
 
         // 상태를 false로, 그리지 않고 있는 상태로 변경합니다
@@ -383,6 +427,7 @@
               lng: center.getLng()
             };
             console.log("지도 중심좌표 저장됨:", centerCoords)
+
         }
     }
 </script>

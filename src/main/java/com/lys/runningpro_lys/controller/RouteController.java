@@ -4,13 +4,17 @@ package com.lys.runningpro_lys.controller;
 import com.lys.runningpro_lys.dto.PageRequestDTO;
 import com.lys.runningpro_lys.dto.PageResponseDTO;
 import com.lys.runningpro_lys.dto.RoutesDTO;
+import com.lys.runningpro_lys.entity.Routes;
+import com.lys.runningpro_lys.repository.RouteRepository;
 import com.lys.runningpro_lys.service.RouteService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -20,7 +24,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class RouteController {
 
     @Autowired
-    RouteService routeService;
+    private RouteService routeService;
+    @Autowired
+    private RouteRepository routeRepository;
 
     @GetMapping("register")
     public void registerGet() {
@@ -40,6 +46,23 @@ public class RouteController {
             return "redirect:/route/register";
         }
     }
+
+
+    //Kakao Map 데이터 post
+    @PostMapping("saveMapData")
+    public ResponseEntity<?> saveMapData(@RequestBody RoutesDTO routesDTO) {
+        Routes routes = new Routes();
+        log.info("-----saveMapData-----");
+        routes.setAddress(routesDTO.getAddress());
+        routes.setDistance(routesDTO.getDistance());
+        routes.setLat(routesDTO.getLat());
+        routes.setLng(routesDTO.getLng());
+
+        Routes saved = routeRepository.save(routes);
+        return ResponseEntity.ok(saved);
+    }
+
+
 
     @GetMapping("list")
     public void list(PageRequestDTO pageRequestDTO, Model model) {

@@ -24,11 +24,11 @@ public class RoutesDTO {
 
     private String description;
 
-    //Kakao API 데이터로 입력됨.
-    private Object routeData;
-
-    //Kakao API 데이터로 입력됨.
-    private Double distance;
+    //Kakao Map 데이터로 입력됨.
+    private Integer distance;
+    private String address;
+    private Double lat;
+    private Double lng;
 
     private Difficulty difficulty;
 
