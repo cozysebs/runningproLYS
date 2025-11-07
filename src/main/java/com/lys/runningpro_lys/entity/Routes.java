@@ -88,7 +88,9 @@ public class Routes {
     //수정필요한 사항: title, difficulty, hr, min, s, avg, max, description.
     public void change(String title, Difficulty difficulty,
                        Integer durationHr, Integer durationMin, Integer durationS,
-                       Integer heartRateAvg, Integer heartRateMax, String description) {
+                       Integer heartRateAvg, Integer heartRateMax, String description,
+                       Integer distance, String address, Double lat, Double lng,
+                       String routePath) {
         this.title = title;
         this.difficulty = difficulty;
         this.durationHr = durationHr;
@@ -97,5 +99,11 @@ public class Routes {
         this.heartRateAvg = heartRateAvg;
         this.heartRateMax = heartRateMax;
         this.description = description;
+        this.distance = distance;
+        this.address = address;
+        this.lat = lat;
+        this.lng = lng;
+        this.routePath = routePath;
     }
+
 }

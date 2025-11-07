@@ -5,6 +5,7 @@ import com.lys.runningpro_lys.dto.PageResponseDTO;
 import com.lys.runningpro_lys.dto.RoutesDTO;
 import com.lys.runningpro_lys.entity.Routes;
 import com.lys.runningpro_lys.entity.Users;
+import com.lys.runningpro_lys.entity.fieldenum.Difficulty;
 import com.lys.runningpro_lys.repository.RouteRepository;
 import com.lys.runningpro_lys.repository.UserRepository;
 import lombok.extern.log4j.Log4j2;
@@ -60,7 +61,9 @@ public class RouteServiceImpl implements RouteService {
         routes.change(routesDTO.getTitle(), routesDTO.getDifficulty(),
                 routesDTO.getDurationHr(), routesDTO.getDurationMin(),
                 routesDTO.getDurationS(), routesDTO.getHeartRateAvg(),
-                routesDTO.getHeartRateMax(), routesDTO.getDescription());
+                routesDTO.getHeartRateMax(), routesDTO.getDescription(),
+                routesDTO.getDistance(), routesDTO.getAddress(),
+                routesDTO.getLat(), routesDTO.getLng(), routesDTO.getRoutePath());
         routeRepository.save(routes);
     }
 
