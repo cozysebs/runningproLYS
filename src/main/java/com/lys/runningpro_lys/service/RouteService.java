@@ -60,6 +60,8 @@ public interface RouteService {
                 .views(routes.getViews())
                 .createdDate(routes.getCreatedDate())
                 .updatedDate(routes.getUpdatedDate())
+                .distance(routes.getDistance())
+                .address(routes.getAddress())
                 .build();
         return routesDTO;
     }

@@ -15,12 +15,27 @@
             </div>
 
             <div class="mb-3">
+                <label class="form-label">지역</label>
+                <input type="text" name="address" class="form-control" th:value="${route.address}" readonly>
+            </div>
+
+            <div class="mb-3">
                 <!--서버로 보낼 실제 데이터가 담길 숨겨진 입력란-->
                 <input type="hidden" id="dataInput" name="difficulty" value="">
                 <!--버튼 클릭 시 JS 함수 호출-->
                 <button type="button" onclick="setAndSubmit('HARD')" class="btn btn-primary">상</button>
                 <button type="button" onclick="setAndSubmit('MEDIUM')" class="btn btn-primary">중</button>
                 <button type="button" onclick="setAndSubmit('EASY')" class="btn btn-primary">하</button>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">조회수</label>
+                <input type="text" name="views" class="form-control" th:value="${route.views}" readonly>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">달린 거리</label>
+                <input type="text" name="distance" class="form-control" th:value="${route.distance}" readonly>
             </div>
 
             <div class="mb-3">
