@@ -61,6 +61,8 @@ public interface RouteService {
                 .createdDate(routes.getCreatedDate())
                 .updatedDate(routes.getUpdatedDate())
                 .distance(routes.getDistance())
+                .lat(routes.getLat())
+                .lng(routes.getLng())
                 .address(routes.getAddress())
                 .build();
         return routesDTO;
