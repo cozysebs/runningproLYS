@@ -103,7 +103,7 @@
     var moveLine; // 선이 그려지고 있을때 마우스 움직임에 따라 그려질 선 객체 입니다
     var clickLine // 마우스로 클릭한 좌표로 그려질 선 객체입니다
     var distanceOverlay; // 선의 거리정보를 표시할 커스텀오버레이 입니다
-    var dots = {}; // 선이 그려지고 있을때 클릭할 때마다 클릭 지점과 거리를 표시하는 커스텀 오버레이 배열입니다.
+    var dots = []; // 선이 그려지고 있을때 클릭할 때마다 클릭 지점과 거리를 표시하는 커스텀 오버레이 배열입니다.
     var geocoder = new kakao.maps.services.Geocoder();
 
 
@@ -277,7 +277,7 @@
             });
 
 
-            content = getTimeHTML(distance); // 커스텀오버레이에 추가될 내용입니다
+            content = getTimeHTML(totalDistanceValue); // 커스텀오버레이에 추가될 내용입니다
             showDistance(content, path[path.length-1]); // 그려진 선의 거리정보를 지도에 표시합니다
 
         } else {
