@@ -49,18 +49,18 @@ public class RouteController {
 
 
     //Kakao Map 데이터 post
-    @PostMapping("saveMapData")
-    public ResponseEntity<?> saveMapData(@RequestBody RoutesDTO routesDTO) {
-        Routes routes = new Routes();
-        log.info("-----saveMapData-----");
-        routes.setAddress(routesDTO.getAddress());
-        routes.setDistance(routesDTO.getDistance());
-        routes.setLat(routesDTO.getLat());
-        routes.setLng(routesDTO.getLng());
-
-        Routes saved = routeRepository.save(routes);
-        return ResponseEntity.ok(saved);
-    }
+//    @PostMapping("saveMapData")
+//    public ResponseEntity<?> saveMapData(@RequestBody RoutesDTO routesDTO) {
+//        Routes routes = new Routes();
+//        log.info("-----saveMapData-----");
+//        routes.setAddress(routesDTO.getAddress());
+//        routes.setDistance(routesDTO.getDistance());
+//        routes.setLat(routesDTO.getLat());
+//        routes.setLng(routesDTO.getLng());
+//
+//        Routes saved = routeRepository.save(routes);
+//        return ResponseEntity.ok(saved);
+//    }
 
 
 

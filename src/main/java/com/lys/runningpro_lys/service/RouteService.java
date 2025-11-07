@@ -35,6 +35,10 @@ public interface RouteService {
                 .durationS(routesDTO.getDurationS())
                 .heartRateMax(routesDTO.getHeartRateMax())
                 .heartRateAvg(routesDTO.getHeartRateAvg())
+                .distance(routesDTO.getDistance())
+                .lng(routesDTO.getLng())
+                .lat(routesDTO.getLat())
+                .address(routesDTO.getAddress())
                 .build();
 
         return routes;

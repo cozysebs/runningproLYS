@@ -24,6 +24,11 @@
             </p>
 
             <form action="/route/register" method="post">
+            <!--전송할 map data-->
+                <input type="hidden" name="distance" id="mapDistance">
+                <input type="hidden" name="lat" id="mapLat">
+                <input type="hidden" name="lng" id="mapLng">
+                <input type="hidden" name="address" id="mapAddress">
                 <input type="hidden" name="email" th:value="'abc@naver.com'">
 
                 <div class="mb-3">
@@ -62,12 +67,10 @@
                     <input type="text" name="heartRateMax" class="form-control" placeholder="BPM">
                 </div>
 
-
                 <div class="mb-3">
                     <label class="form-label">메모</label>
                     <textarea name="description" class="form-control" rows="3"></textarea>
                 </div>
-
 
                 <div class="mb-3">
                     <button type="submit" class="btn btn-primary">Submit</button>
@@ -77,6 +80,7 @@
                     </a>
                 </div>
             </form>
+
         </div>
     </div>
 </div>
@@ -106,7 +110,6 @@
     var clickLine // 마우스로 클릭한 좌표로 그려질 선 객체입니다
     var distanceOverlay; // 선의 거리정보를 표시할 커스텀오버레이 입니다
     var dots = {}; // 선이 그려지고 있을때 클릭할 때마다 클릭 지점과 거리를 표시하는 커스텀 오버레이 배열입니다.
-    var totalDistanceValue = 0; // 총거리 저장용 변수
     var geocoder = new kakao.maps.services.Geocoder();
 
 
@@ -197,7 +200,7 @@
     });
 
 
-
+    var totalDistanceValue=0, lastLat=null, lastLng=null, lastAddress="";
     // 지도에 마우스 오른쪽 클릭 이벤트를 등록합니다
     // 선을 그리고있는 상태에서 마우스 오른쪽 클릭 이벤트가 발생하면 선 그리기를 종료합니다
     kakao.maps.event.addListener(map, 'rightclick', function (mouseEvent) {
@@ -221,50 +224,53 @@
                 dots[dots.length-1].distance = null;
             }
 
-            var distance = Math.round(clickLine.getLength()), // 선의 총 거리를 계산합니다
-            totalDistanceValue = distance;
-            //console.log("총거리 저장됨: ", totalDistanceValue);
+            totalDistanceValue = Math.round(clickLine.getLength()); // 선의 총 거리를 계산합니다
 
             // 마지막 클릭 지점 좌표 (kakao.maps.LatLng)
             var lastLatLng = path[path.length - 1];
-            var lat = lastLatLng.getLat();
-            var lng = lastLatLng.getLng();
+            lastLat = lastLatLng.getLat();
+            lastLng = lastLatLng.getLng();
+
 
             // 좌표 -> 주소 변환 (coord2Address 사용)
-            geocoder.coord2Address(lng, lat, function(result, status) {
+            geocoder.coord2Address(lastLng, lastLat, function(result, status) {
                 if (status === kakao.maps.services.Status.OK) {
                     // result 배열의 첫 항목에 주소 정보가 있음
-                    var address = result[0].address ? result[0].address.address_name : '';
-                    //console.log("변환된 주소:", address);
+                    lastAddress = result[0].address ? result[0].address.address_name : '';
 
-                    // 서버로 전송 (fetch)
-                    var payload = {
-                        distance: totalDistanceValue,
-                        address: address,
-                        lat: lat,
-                        lng: lng
-                    };
-
-                    console.log("위도:", lat);
-                    console.log("경도:", lng);
-                    console.log("변환된 주소:", address);
+                    console.log("위도:", lastLat);
+                    console.log("경도:", lastLng);
+                    console.log("변환된 주소:", lastAddress);
                     console.log("총거리 저장됨: ", totalDistanceValue);
 
-                    fetch('/route/saveMapData', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(payload)
-                    })
-                    .then(res => {
-                    if(!res.ok) throw new Error('서버 응답 에러: ' + res.status);
-                    return res.json();
-                    })
-                    .then(data => {
-                    console.log('서버 저장 완료', data);
-                    })
-                    .catch(err => console.error('저장 중 오류:', err));
+                    document.getElementById('mapDistance').value = totalDistanceValue;
+                    document.getElementById('mapLat').value = lastLat;
+                    document.getElementById('mapLng').value = lastLng;
+                    document.getElementById('mapAddress').value = lastAddress;
+
+                    // 서버로 전송 (fetch)
+                    // var payload = {
+                    //     distance: totalDistanceValue,
+                    //     address: address,
+                    //     lat: lat,
+                    //     lng: lng
+                    // };
+
+                    // fetch('/route/saveMapData', {
+                    //     method: 'POST',
+                    //     headers: {
+                    //         'Content-Type': 'application/json'
+                    //     },
+                    //     body: JSON.stringify(payload)
+                    // })
+                    // .then(res => {
+                    // if(!res.ok) throw new Error('서버 응답 에러: ' + res.status);
+                    // return res.json();
+                    // })
+                    // .then(data => {
+                    // console.log('서버 저장 완료', data);
+                    // })
+                    // .catch(err => console.error('저장 중 오류:', err));
 
                 }else{
                     console.warn("주소 변환 실패:", status);
@@ -287,6 +293,8 @@
         drawingFlag = false;
       }
     });
+
+
 
     // 클릭으로 그려진 선을 지도에서 제거하는 함수입니다
     function deleteClickLine() {
