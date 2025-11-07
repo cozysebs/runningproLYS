@@ -39,6 +39,7 @@ public interface RouteService {
                 .lng(routesDTO.getLng())
                 .lat(routesDTO.getLat())
                 .address(routesDTO.getAddress())
+                .routePath(routesDTO.getRoutePath())
                 .build();
 
         return routes;
@@ -64,6 +65,7 @@ public interface RouteService {
                 .lat(routes.getLat())
                 .lng(routes.getLng())
                 .address(routes.getAddress())
+                .routePath(routes.getRoutePath())
                 .build();
         return routesDTO;
     }

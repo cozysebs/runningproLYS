@@ -25,10 +25,11 @@ public class RoutesDTO {
     private String description;
 
     //Kakao Map 데이터로 입력됨.
-    private Integer distance;
-    private String address;
-    private Double lat;
-    private Double lng;
+    private Integer distance;       //거리
+    private String address;         //주소
+    private Double lat;             //위도
+    private Double lng;             //경도
+    private String routePath;       //코스 경로
 
     private Difficulty difficulty;
 

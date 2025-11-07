@@ -52,6 +52,8 @@ public class QRoutes extends EntityPathBase<Routes> {
 
     public final NumberPath<Double> lng = createNumber("lng", Double.class);
 
+    public final StringPath routePath = createString("routePath");
+
     public final StringPath title = createString("title");
 
     public final DateTimePath<java.time.LocalDateTime> updatedDate = createDateTime("updatedDate", java.time.LocalDateTime.class);
