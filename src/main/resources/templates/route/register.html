@@ -41,9 +41,9 @@
                     <!--서버로 보낼 실제 데이터가 담길 숨겨진 입력란-->
                     <input type="hidden" id="dataInput" name="difficulty" value="">
                     <!--버튼 클릭 시 JS 함수 호출-->
-                    <button type="button" onclick="setAndSubmit('HARD')" class="btn btn-primary">상</button>
-                    <button type="button" onclick="setAndSubmit('MEDIUM')" class="btn btn-primary">중</button>
-                    <button type="button" onclick="setAndSubmit('EASY')" class="btn btn-primary">하</button>
+                    <button type="button" onclick="setAndSubmit('HARD', this)" class="btn btn-outline-success">상</button>
+                    <button type="button" onclick="setAndSubmit('MEDIUM', this)" class="btn btn-outline-success">중</button>
+                    <button type="button" onclick="setAndSubmit('EASY', this)" class="btn btn-outline-success">하</button>
                 </div>
 
                 <div class="mb-3">
@@ -86,9 +86,16 @@
     </div>
 </div>
 <script layout:fragment="script" th:inline="javascript">
-    function setAndSubmit(value) {
+    function setAndSubmit(value, btn) {
         // 'dataInput'이라는 이름의 숨겨진 입력란에 값 설정
         document.getElementById('dataInput').value = value;
+
+        // 모든 버튼에서 active 제거
+        var buttons = document.querySelectorAll('.btn.btn-outline-success');
+        buttons.forEach(b => b.classList.remove('active'));
+
+        // 클릭한 버튼에만 active 추가
+        btn.classList.add('active');
     }
 
     var mapContainer = document.getElementById('map'), // 지도를 표시할 div

@@ -12,8 +12,9 @@
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="/css/styles.css" rel="stylesheet" />
 
-    <!-- 지도에 표시되는 dot css 설정 -->
+
     <style>
+        /*지도에 표시되는 dot css 설정*/
         .dot {overflow:hidden;float:left;width:12px;height:12px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/mini_circle.png');}
         .dotOverlay {position:relative;bottom:10px;border-radius:6px;border: 1px solid #ccc;border-bottom:2px solid #ddd;float:left;font-size:12px;padding:5px;background:#fff;}
         .dotOverlay:nth-of-type(n) {border:0; box-shadow:0px 1px 2px #888;}
@@ -22,6 +23,14 @@
         .distanceInfo {position:relative;top:5px;left:5px;list-style:none;margin:0;}
         .distanceInfo .label {display:inline-block;width:50px;}
         .distanceInfo:after {content:none;}
+
+        /*버튼 클릭 시 호버 활성이 유지되게*/
+        .btn.btn-outline-success:hover,
+        .btn.btn-outline-success.active {
+            background-color: #198754;
+            color: white;
+            border-color: #198754;
+        }
     </style>
     <!-- Kakao 지도 API 불러오기 -->
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=bef6c0af0c16eb930b44c3b94a75c1c1&libraries=services"></script>

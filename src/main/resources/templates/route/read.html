@@ -23,9 +23,9 @@
                 <!--서버로 보낼 실제 데이터가 담길 숨겨진 입력란-->
                 <input type="hidden" id="dataInput" name="difficulty" value="">
                 <!--버튼 클릭 시 JS 함수 호출-->
-                <button type="button" onclick="setAndSubmit('HARD')" class="btn btn-primary">상</button>
-                <button type="button" onclick="setAndSubmit('MEDIUM')" class="btn btn-primary">중</button>
-                <button type="button" onclick="setAndSubmit('EASY')" class="btn btn-primary">하</button>
+                <button type="button" id="btnHARD" class="btn btn-outline-success">상</button>
+                <button type="button" id="btnMEDIUM" class="btn btn-outline-success">중</button>
+                <button type="button" id="btnEASY" class="btn btn-outline-success">하</button>
             </div>
 
             <div class="mb-3">
@@ -90,6 +90,17 @@
 </div>
 <script layout:fragment="script" th:inline="javascript">
 
+    // controller에서 모델로 넘긴 route.difficulty 값을 JS 변수로 받음
+    var difficulty = /*[[${route.difficulty}]]*/ null;
+    // difficulty 값이 존재하면 해당 버튼에 active 부여
+    if (difficulty) {
+        var btn = document.getElementById('btn'+difficulty);
+        if(btn) {
+            btn.classList.add('active');
+        }
+    }
+
+
     var lat = /*[[${route.lat}]]*/ 37.566826;
     var lng = /*[[${route.lng}]]*/ 126.9786567;
 
@@ -144,7 +155,7 @@
         });
 
         // 총거리 계산 (서버 저장값이 있으면 그 값을 우선 사용)
-        //    - route.totalDistance가 모델에 있으면 그 값을, 없으면 poly.getLength()로 계산
+        // poly.getLength()로 계산
         var distance = (Math.round(poly.getLength())); // m 단위 정수
 
         // 보기 좋은 포맷 (1km 이상이면 소수 1자리 km)

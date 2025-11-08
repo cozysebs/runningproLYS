@@ -18,7 +18,9 @@
             </form>
 
             <!-- 지도 불러오기 -->
-            <div id="map" style="width:100%;height:350px;"></div>
+            <div id="map"
+                 th:data-routepath="${route.routePath}"
+                 style="width:100%;height:350px;"></div>
             <p>
                 <em>지도를 마우스로 클릭하면 선 그리기가 시작되고<br>오른쪽 마우스를 클릭하면 선 그리기가 종료됩니다</em>
             </p>
@@ -43,9 +45,9 @@
                     <!--서버로 보낼 실제 데이터가 담길 숨겨진 입력란-->
                     <input type="hidden" id="dataInput" name="difficulty" value="">
                     <!--버튼 클릭 시 JS 함수 호출-->
-                    <button type="button" onclick="setAndSubmit('HARD')" class="btn btn-primary">상</button>
-                    <button type="button" onclick="setAndSubmit('MEDIUM')" class="btn btn-primary">중</button>
-                    <button type="button" onclick="setAndSubmit('EASY')" class="btn btn-primary">하</button>
+                    <button type="button" id="btnHARD" onclick="setAndSubmit('HARD', this)" class="btn btn-outline-success">상</button>
+                    <button type="button" id="btnMEDIUM" onclick="setAndSubmit('MEDIUM', this)" class="btn btn-outline-success">중</button>
+                    <button type="button" id="btnEASY" onclick="setAndSubmit('EASY', this)" class="btn btn-outline-success">하</button>
                 </div>
 
                 <div class="mb-3">
@@ -87,14 +89,35 @@
     </div>
 </div>
 <script layout:fragment="script" th:inline="javascript">
-    function setAndSubmit(value) {
+
+    // controller에서 모델로 넘긴 route.difficulty 값을 JS 변수로 받음
+    var difficulty = /*[[${route.difficulty}]]*/ null;
+    // difficulty 값이 존재하면 해당 버튼에 active 부여
+    if (difficulty) {
+        var btn = document.getElementById('btn'+difficulty);
+        if(btn) {
+            btn.classList.add('active');
+        }
+    }
+    function setAndSubmit(value, btn) {
         // 'dataInput'이라는 이름의 숨겨진 입력란에 값 설정
         document.getElementById('dataInput').value = value;
+
+        // 모든 버튼에서 active 제거
+        var buttons = document.querySelectorAll('.btn.btn-outline-success');
+        buttons.forEach(b => b.classList.remove('active'));
+
+        // 클릭한 버튼에만 active 추가
+        btn.classList.add('active');
     }
+
+
+    var lat = /*[[${route.lat}]]*/ 37.566826;
+    var lng = /*[[${route.lng}]]*/ 126.9786567;
 
     var mapContainer = document.getElementById('map'), // 지도를 표시할 div
         mapOption = {
-            center: new kakao.maps.LatLng(37.566826, 126.9786567), // 지도의 중심좌표
+            center: new kakao.maps.LatLng(lat, lng), // 지도의 중심좌표
             level: 4 // 지도의 확대 레벨
         };
 
@@ -106,6 +129,89 @@
     var distanceOverlay; // 선의 거리정보를 표시할 커스텀오버레이 입니다
     var dots = []; // 선이 그려지고 있을때 클릭할 때마다 클릭 지점과 거리를 표시하는 커스텀 오버레이 배열입니다.
     var geocoder = new kakao.maps.services.Geocoder();
+
+
+    // routePath 읽어서 파싱
+    var rawPath = mapContainer.dataset.routepath || "[]";
+    let coords = [];
+    try { coords = JSON.parse(rawPath); } catch (e) {console.warn(e);}
+
+    let originalLine = null;
+    if(coords.length >= 2) {
+        var latlngs = coords.map(p => new kakao.maps.LatLng(p.lat, p.lng));
+
+        originalLine = new kakao.maps.Polyline({
+            map,
+            path: latlngs,
+            strokeWeight: 3,
+            strokeColor: '#db4040',
+            strokeOpacity: 1,
+            strokeStyle: 'solid'
+        });
+
+        // 코스 전체가 보이도록 Bounds 맞춤
+        var originalBounds = new kakao.maps.LatLngBounds();
+        latlngs.forEach(ll => originalBounds.extend(ll));
+        map.setBounds(originalBounds);
+
+
+        var startPos = latlngs[0];
+        var endPos = latlngs[latlngs.length - 1];
+
+        // 시작점 dot
+        var startDot = new kakao.maps.CustomOverlay({
+            map, position: startPos, zIndex: 2,
+            content: '<span class="dot"></span>'
+        });
+        // 도착점 dot
+        var endDot = new kakao.maps.CustomOverlay({
+            map, position: endPos, zIndex: 2,
+            content: '<span class="dot"></span>'
+        });
+
+        // 총거리 계산 (서버 저장값이 있으면 그 값을 우선 사용)
+        // poly.getLength()로 계산
+        var distance = (Math.round(originalLine.getLength())); // m 단위 정수
+
+        // 보기 좋은 포맷 (1km 이상이면 소수 1자리 km)
+        var formatDistance = m => (m >= 1000 ? (m/1000).toFixed(1) + 'km' : m + 'm');
+
+        // 출발지 오버레이: 시작점에 한 번만 표시
+        var startDotOverlay = new kakao.maps.CustomOverlay({
+            map, position: startPos, zIndex: 3, yAnchor: 1,
+            content: '<div class="dotOverlay">출발점</div>'
+        });
+
+        // 총거리 오버레이: 도착점에 한 번만 표시
+        var endDotOverlay = new kakao.maps.CustomOverlay({
+            map, position: endPos, zIndex: 3, yAnchor: 1,
+            content: '<div class="dotOverlay">도착점 <span class="number">' + formatDistance(distance) + '</span></div>'
+        });
+    }
+
+    // 기존 선 삭제 함수
+    function deleteOriginalLine() {
+        if(originalLine) {
+            originalLine.setMap(null);
+            originalLine = null;
+        }
+        if(startDot) {
+            startDot.setMap(null);
+            startDot = null;
+        }
+        if(endDot) {
+            endDot.setMap(null);
+            endDot = null;
+        }
+        if(startDotOverlay) {
+            startDotOverlay.setMap(null);
+            startDotOverlay = null;
+        }
+        if(endDotOverlay) {
+            endDotOverlay.setMap(null);
+            endDotOverlay = null;
+        }
+    }
 
 
     // 지도에 클릭 이벤트를 등록합니다
@@ -121,14 +227,10 @@
             // 상태를 true로, 선이 그리고있는 상태로 변경합니다
             drawingFlag = true;
 
-            // 지도 위에 선이 표시되고 있다면 지도에서 제거합니다
-            deleteClickLine();
-
-            // 지도 위에 커스텀오버레이가 표시되고 있다면 지도에서 제거합니다
-            deleteDistnce();
-
-            // 지도 위에 선을 그리기 위해 클릭한 지점과 해당 지점의 거리정보가 표시되고 있다면 지도에서 제거합니다
-            deleteCircleDot();
+            deleteOriginalLine(); // 이전 경로 삭제
+            deleteClickLine();  // 지도 위에 선이 표시되고 있다면 지도에서 제거합니다
+            deleteDistnce();    // 지도 위에 커스텀오버레이가 표시되고 있다면 지도에서 제거합니다
+            deleteCircleDot();  // 지도 위에 선을 그리기 위해 클릭한 지점과 해당 지점의 거리정보가 표시되고 있다면 지도에서 제거합니다
 
             // 클릭한 위치를 기준으로 선을 생성하고 지도위에 표시합니다
             clickLine = new kakao.maps.Polyline({
