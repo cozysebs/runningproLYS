@@ -44,8 +44,9 @@ public class RouteSearchImpl extends QuerydslRepositorySupport implements RouteS
     }
 
     @Override
-    public Page<Routes> searchAllPlus(String[] types, String keyword,
-                                      Integer distance, Difficulty difficulty, Pageable pageable) {
+    public Page<Routes> searchAllPlus(String[] types, String keyword, Integer distance,
+                                      Difficulty difficulty, Pageable pageable, String sort) {
+
         QRoutes qroutes = QRoutes.routes;
         JPQLQuery<Routes> query = from(qroutes);
         BooleanBuilder builder = new BooleanBuilder();
@@ -77,6 +78,13 @@ public class RouteSearchImpl extends QuerydslRepositorySupport implements RouteS
         // 난이도
         if(difficulty!=null){
             builder.and(qroutes.difficulty.eq(difficulty));
+        }
+
+        // 정렬 - 인기|최신
+        if ("popular".equalsIgnoreCase(sort)) {
+            query.orderBy(qroutes.views.desc(), qroutes.id.desc());
+        } else { // latest (요구사항: created_at 기준 ASC)
+            query.orderBy(qroutes.id.desc(), qroutes.id.desc());
         }
 
         query.where(builder);

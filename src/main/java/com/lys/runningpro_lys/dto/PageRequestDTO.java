@@ -29,6 +29,9 @@ public class PageRequestDTO {
     private Integer distance;
     private Difficulty difficulty;
 
+    // 정렬 키 추가: "popular" | "latest"
+//    private String sort = "latest";
+
     public String[] getTypes(){
         if(type==null || type.isEmpty()){
             return null;
@@ -36,8 +39,16 @@ public class PageRequestDTO {
         return type.split("");
     }
 
-    public Pageable getPageable(String...props){
-        return PageRequest.of(page - 1, size, Sort.by(props).descending());
+    // 추가! 정렬 키("latest" | "popular")
+    private String sort = "latest";
+
+//    public Pageable getPageable(String...props){
+//        return PageRequest.of(page - 1, size, Sort.by(props).descending());
+//    }
+
+    // 추가! 정렬 없는 페이저 (QueryDSL orderBy만 쓰기 위함)
+    public Pageable getPageableNoSort() {
+        return PageRequest.of(this.page - 1, this.size); // Sort.unsorted()
     }
 
     public String getLink() {
@@ -50,6 +61,15 @@ public class PageRequestDTO {
             }
             if(keyword!=null && keyword.length()>0){
                 builder.append("&keyword="+keyword);
+            }
+            if(distance!=null && distance>0){
+                builder.append("&distance="+distance);
+            }
+            if(difficulty!=null){
+                builder.append("&difficulty="+difficulty);
+            }
+            if(sort!=null){
+                builder.append("&sort="+sort);
             }
             link=builder.toString();
         }

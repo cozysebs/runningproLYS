@@ -76,7 +76,8 @@ public class RouteServiceImpl implements RouteService {
     @Override
     public PageResponseDTO<RoutesDTO> getList(PageRequestDTO pageRequestDTO) {
 
-        Pageable pageable = pageRequestDTO.getPageable("id");
+//        Pageable pageable = pageRequestDTO.getPageable("id");
+        Pageable pageable = pageRequestDTO.getPageableNoSort();
 
 //        Page<Routes> result = routeRepository.searchAll(
 //                pageRequestDTO.getTypes(),
@@ -88,7 +89,8 @@ public class RouteServiceImpl implements RouteService {
                 pageRequestDTO.getKeyword(),
                 pageRequestDTO.getDistance(),
                 pageRequestDTO.getDifficulty(),
-                pageable);
+                pageable,
+                pageRequestDTO.getSort());
 
         List<RoutesDTO> dtoList = result.getContent().stream()
                 .map(routes -> entityToDto(routes))

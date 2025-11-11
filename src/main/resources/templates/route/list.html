@@ -7,64 +7,85 @@
 <div layout:fragment="content">
     <div class="card">
         <!--검색-->
-        <!--세부사항 수정해야함. 지역, 거리, 난이도를 필터로 검색(and로 묶기)-->
-        <form action="/route/list" method="get">
-            <!--페이징 유지-->
-            <input type="hidden" name="size" th:value="${pageRequestDTO.size}">
-            <!--선택값 실전송용-->
-            <input type="hidden" name="distance" id="distanceInput" th:value="${pageRequestDTO.distance}">
-            <input type="hidden" name="difficulty" id="difficultyInput" th:value="${pageRequestDTO.difficulty}">
-            <input type="hidden" name="type" value="a">
-            <!--지역 검색-->
-            <div class="mb-3">
-                <label class="form-label fw-semibold">지역 검색</label>
-                <input type="text" name="keyword" class="form-control" placeholder="예) 부산 광안리"
-                       th:value="${pageRequestDTO.keyword}">
-            </div>
-            <!--거리 선택-->
-            <div class="mb-3">
-                <div class="fw-semibold mb-2">거리</div>
-                <div class="d-flex gap-2 flex-wrap" id="distanceGroup" data-input="#distanceInput">
-                    <button type="button" class="btn btn-outline-secondary" data-value="10000">10km~</button>
-                    <button type="button" class="btn btn-outline-secondary" data-value="5000">5~10km</button>
-                    <button type="button" class="btn btn-outline-secondary" data-value="1000">1~5km</button>
+        <div class="mb-3">
+            <form action="/route/list" method="get">
+                <!--페이징 유지-->
+                <input type="hidden" name="size" th:value="${pageRequestDTO.size}">
+                <!--선택값 실전송용-->
+                <input type="hidden" name="distance" id="distanceInput" th:value="${pageRequestDTO.distance}">
+                <input type="hidden" name="difficulty" id="difficultyInput" th:value="${pageRequestDTO.difficulty}">
+                <input type="hidden" name="type" value="a">
+                <!-- 추가: 정렬 유지용 -->
+                <input type="hidden" name="sort" id="sortInput" th:value="${pageRequestDTO.sort}">
+                <!--지역 검색-->
+                <div class="mb-3, mt-3">
+                    <input type="text" name="keyword" class="form-control" placeholder="지역 검색: 예) 부산 남구"
+                           th:value="${pageRequestDTO.keyword}">
                 </div>
-            </div>
-            <!--난이도 선택-->
-            <div class="mb-3">
-                <div class="fw-semibold mb-2">난이도</div>
-                <div class="d-flex gap-2 flex-wrap" id="difficultyGroup" data-input="#difficultyInput">
-                    <button type="button" class="btn btn-outline-success" data-value="HARD">상</button>
-                    <button type="button" class="btn btn-outline-success" data-value="MEDIUM">중</button>
-                    <button type="button" class="btn btn-outline-success" data-value="EASY">하</button>
+                <!--거리 선택-->
+                <div class="mb-3">
+                    <div class="fw-semibold mb-2">거리</div>
+                    <div class="d-flex gap-2 flex-wrap" id="distanceGroup" data-input="#distanceInput">
+                        <button type="button" class="btn btn-outline-secondary" data-value="10000">10km~</button>
+                        <button type="button" class="btn btn-outline-secondary" data-value="5000">5~10km</button>
+                        <button type="button" class="btn btn-outline-secondary" data-value="1000">1~5km</button>
+                    </div>
                 </div>
-            </div>
-            <!--액션-->
-            <div class="d-flex gap-2">
-                <button class="btn btn-secondary" type="submit">검색</button>
-                <button class="btn btn-outline-secondary" type="reset" id="resetBtn">필터 초기화</button>
-            </div>
-        </form>
+                <!--난이도 선택-->
+                <div class="mb-3">
+                    <div class="fw-semibold mb-2">난이도</div>
+                    <div class="d-flex gap-2 flex-wrap" id="difficultyGroup" data-input="#difficultyInput">
+                        <button type="button" class="btn btn-outline-success" data-value="HARD">상</button>
+                        <button type="button" class="btn btn-outline-success" data-value="MEDIUM">중</button>
+                        <button type="button" class="btn btn-outline-success" data-value="EASY">하</button>
+                    </div>
+                </div>
+                <!--액션-->
+                <div class="d-flex gap-2">
+                    <button class="btn btn-secondary" type="submit">검색</button>
+                    <button class="btn btn-outline-secondary" type="reset" id="resetBtn">필터 초기화</button>
+                </div>
+            </form>
+        </div>
 
         <!--게시판 목록보기-->
         <div class="card-body">
-            <div class="card-title">게시판 목록보기</div>
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th scope="col">Title</th>
-                    <th scope="col">CreatedDate</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="route:${responseDTO.dtoList}">
-                    <td>
-                        <a th:href="|@{/route/read(id=${route.id},mode=1)}&${pageRequestDTO.getLink()}|">[[${route.title}]]</a>
-                    </td>
-                    <td th:text="${#temporals.format(route.createdDate, 'yyyy-MM-dd HH:mm:dd')}"></td>
-                </tr>
-                </tbody>
-            </table>
+            <div class="card-title mb-2">게시판 목록보기</div>
+
+            <!--인기순 || 최신순 정렬-->
+            <div class="mb-3 d-flex gap-2">
+              <button type="button" class="btn btn-outline-secondary me-2 sortBtn" data-sort="popular">인기순</button>
+              <button type="button" class="btn btn-outline-secondary me-2 sortBtn" data-sort="latest">최신순</button>
+            </div>
+
+            <!--/*            <table class="table table-striped">*/-->
+            <!--/*                <thead>*/-->
+            <!--/*                <tr>*/-->
+            <!--/*                    <th scope="col">Title</th>*/-->
+            <!--/*                    <th scope="col">CreatedDate</th>*/-->
+            <!--/*                </tr>*/-->
+            <!--/*                </thead>*/-->
+            <!--/*                <tbody>*/-->
+            <!--/*                <tr th:each="route:${responseDTO.dtoList}">*/-->
+            <!--/*                    <td>*/-->
+            <!--/*                        <a th:href="|@{/route/read(id=${route.id},mode=1)}&${pageRequestDTO.getLink()}|">[[${route.title}]]</a>*/-->
+            <!--/*                    </td>*/-->
+            <!--/*                    <td th:text="${#temporals.format(route.createdDate, 'yyyy-MM-dd HH:mm:dd')}"></td>*/-->
+            <!--/*                </tr>*/-->
+            <!--/*                </tbody>*/-->
+            <!--/*            </table>*/-->
+
+            <div class="route-grid">
+                <a class="route-card"
+                    th:each="route:${responseDTO.dtoList}"
+                    th:href="|@{/route/read(id=${route.id},mode=1)}&${pageRequestDTO.getLink()}|">
+
+                    <!--맵 이미지-->
+                    <div class="route-thumb">
+                        <span>코스 이미지</span>
+                    </div>
+                </a>
+            </div>
 
             <!--페이지 버튼-->
             <div class="float-end">
@@ -83,10 +104,29 @@
                 </ul>
             </div>
         </div>
+
+
+
     </div>
 </div>
 
 <script layout:fragment="script" th:inline="javascript">
+    // 분류를 포함한 페이지네이션
+    document.querySelectorAll('.sortBtn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const form = document.querySelector('form');
+            const sortInput = document.getElementById('sortInput');
+            // 정렬값 설정
+            sortInput.value = e.currentTarget.dataset.sort;
+
+            // 페이지를 1로 초기화(선택) — 정렬 바꿀 때 첫 페이지로
+            // 기존에 추가된 page hidden 제거
+            form.querySelectorAll('input[name="page"]').forEach(n => n.remove());
+
+            form.submit();
+        });
+    });
+
     document.querySelector(".pagination").addEventListener("click", function (e) {
         e.preventDefault()
         e.stopPropagation()
@@ -129,10 +169,34 @@
         bindSingleSelect(document.getElementById('distanceGroup'));
         bindSingleSelect(document.getElementById('difficultyGroup'));
 
+        const sortInput = document.getElementById('sortInput');
+        const sortBtns = document.querySelectorAll('.sortBtn');
+
+        if(sortInput && sortInput.value) {
+            const preset = document.querySelector(`.sortBtn[data-sort="${sortInput.value}"]`);
+            if(preset) preset.classList.add('active');
+        }
+
+        sortBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                sortBtns.forEach(b => b.classList.remove('active'));
+
+                const current = e.currentTarget;
+                current.classList.add('active');
+
+                sortInput.value = current.dataset.sort;
+
+                form.querySelectorAll('input[name="page"]').forEach(n => n.remove());
+
+                form.submit();
+            });
+        });
+
         // 초기화 버튼: 숨은 입력/active 모두 해제
         document.getElementById('resetBtn').addEventListener('click', () => {
             document.getElementById('distanceInput').value = '';
             document.getElementById('difficultyInput').value = '';
+            document.getElementById('sortInput').value = '';
             document.querySelectorAll('#distanceGroup .btn, #difficultyGroup .btn')
                 .forEach(b=>b.classList.remove('active'));
             // keyword는 기본 reset 동작으로 지워짐
