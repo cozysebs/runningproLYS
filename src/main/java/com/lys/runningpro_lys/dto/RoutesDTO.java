@@ -45,6 +45,8 @@ public class RoutesDTO {
 
     private int views;
 
+    private Double averageRating;
+
     private LocalDateTime createdDate;
 
     private LocalDateTime updatedDate;

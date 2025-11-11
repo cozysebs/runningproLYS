@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface RouteRepository extends JpaRepository<Routes, Long>, RouteSearch {
 
-    @Query("select r from Routes r where r.id=:id")
-    Optional<Routes> findRoutesById(Long id);
+//    @Query("select r from Routes r where r.id=:id")
+//    Optional<Routes> findRoutesById(Long id);
 }

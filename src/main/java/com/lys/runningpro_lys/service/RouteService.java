@@ -66,6 +66,7 @@ public interface RouteService {
                 .lng(routes.getLng())
                 .address(routes.getAddress())
                 .routePath(routes.getRoutePath())
+                .averageRating(routes.getAverageRating())
                 .build();
         return routesDTO;
     }

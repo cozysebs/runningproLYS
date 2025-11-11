@@ -9,19 +9,40 @@
         <!--검색-->
         <!--세부사항 수정해야함. 지역, 거리, 난이도를 필터로 검색(and로 묶기)-->
         <form action="/route/list" method="get">
+            <!--페이징 유지-->
             <input type="hidden" name="size" th:value="${pageRequestDTO.size}">
-            <div class="col">
-                <div class="input-group mt-3 mb-lg-3">
-                    <div class="input-group-prepend">
-                        <select class="form-select" name="type">
-                            <option value="">----</option>
-                            <option th:selected="${pageRequestDTO.type=='t'}" value="t">제목</option>
-                        </select>
-                    </div>
-                    <input type="text" name="keyword" class="input-control" th:value="${pageRequestDTO.keyword}">
-                    <button class="btn btn-secondary searchBtn" type="submit">Search</button>
-                    <button class="btn btn-outline-secondary clearBtn" type="reset">Clear</button>
+            <!--선택값 실전송용-->
+            <input type="hidden" name="distance" id="distanceInput" th:value="${pageRequestDTO.distance}">
+            <input type="hidden" name="difficulty" id="difficultyInput" th:value="${pageRequestDTO.difficulty}">
+            <input type="hidden" name="type" value="a">
+            <!--지역 검색-->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">지역 검색</label>
+                <input type="text" name="keyword" class="form-control" placeholder="예) 부산 광안리"
+                       th:value="${pageRequestDTO.keyword}">
+            </div>
+            <!--거리 선택-->
+            <div class="mb-3">
+                <div class="fw-semibold mb-2">거리</div>
+                <div class="d-flex gap-2 flex-wrap" id="distanceGroup" data-input="#distanceInput">
+                    <button type="button" class="btn btn-outline-secondary" data-value="10000">10km~</button>
+                    <button type="button" class="btn btn-outline-secondary" data-value="5000">5~10km</button>
+                    <button type="button" class="btn btn-outline-secondary" data-value="1000">1~5km</button>
                 </div>
+            </div>
+            <!--난이도 선택-->
+            <div class="mb-3">
+                <div class="fw-semibold mb-2">난이도</div>
+                <div class="d-flex gap-2 flex-wrap" id="difficultyGroup" data-input="#difficultyInput">
+                    <button type="button" class="btn btn-outline-success" data-value="HARD">상</button>
+                    <button type="button" class="btn btn-outline-success" data-value="MEDIUM">중</button>
+                    <button type="button" class="btn btn-outline-success" data-value="EASY">하</button>
+                </div>
+            </div>
+            <!--액션-->
+            <div class="d-flex gap-2">
+                <button class="btn btn-secondary" type="submit">검색</button>
+                <button class="btn btn-outline-secondary" type="reset" id="resetBtn">필터 초기화</button>
             </div>
         </form>
 
@@ -62,7 +83,6 @@
                 </ul>
             </div>
         </div>
-
     </div>
 </div>
 
@@ -79,4 +99,43 @@
         formObj.innerHTML += `<input type='hidden' name='page' value='${num}'>`
         formObj.submit()
     })
+
+    // 하단은 검색바 기능 설정
+    // 공통: 단일 선택 토글(같은 버튼 다시 클릭 시 해제)
+    function bindSingleSelect(groupEl) {
+        const inputSel = groupEl.dataset.input;
+        const hidden = document.querySelector(inputSel);
+        groupEl.addEventListener('click', (e) => {
+            if (!(e.target instanceof HTMLElement) || !e.target.dataset.value) return;
+            const btn = e.target;
+            const value = btn.dataset.value;
+            if (btn.classList.contains('active')) {
+                btn.classList.remove('active');         // 해제
+                hidden.value = '';
+            } else {
+                groupEl.querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));
+                btn.classList.add('active');
+                hidden.value = value;
+            }
+        });
+        // 초기값 복원(뒤로가기/리스트 재진입)
+        if (hidden.value) {
+            const preset = groupEl.querySelector(`.btn[data-value="${hidden.value}"]`);
+            if (preset) preset.classList.add('active');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        bindSingleSelect(document.getElementById('distanceGroup'));
+        bindSingleSelect(document.getElementById('difficultyGroup'));
+
+        // 초기화 버튼: 숨은 입력/active 모두 해제
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            document.getElementById('distanceInput').value = '';
+            document.getElementById('difficultyInput').value = '';
+            document.querySelectorAll('#distanceGroup .btn, #difficultyGroup .btn')
+                .forEach(b=>b.classList.remove('active'));
+            // keyword는 기본 reset 동작으로 지워짐
+        });
+    });
 </script>
