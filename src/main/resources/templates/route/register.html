@@ -31,52 +31,75 @@
                 <input type="hidden" name="address" id="mapAddress">
                 <input type="hidden" name="routePath" id="routePath">
                 <input type="hidden" name="email" th:value="'abc@naver.com'">
+                <input type="hidden" id="dataInput" name="difficulty" value="">
 
                 <div class="mb-3">
-                    <label class="form-label">Title</label>
+                    <label class="form-label fw-semibold">제목</label>
                     <input type="text" name="title" class="form-control" placeholder="제목을 입력하세요.">
                 </div>
 
-                <div class="mb-3">
-                    <!--서버로 보낼 실제 데이터가 담길 숨겨진 입력란-->
-                    <input type="hidden" id="dataInput" name="difficulty" value="">
-                    <!--버튼 클릭 시 JS 함수 호출-->
-                    <button type="button" onclick="setAndSubmit('HARD', this)" class="btn btn-outline-success">상</button>
-                    <button type="button" onclick="setAndSubmit('MEDIUM', this)" class="btn btn-outline-success">중</button>
-                    <button type="button" onclick="setAndSubmit('EASY', this)" class="btn btn-outline-success">하</button>
+                <div class="mb-3 d-flex align-items-start gap-3 flex-wrap">
+                    <label class="form-label">난이도</label>
+                    <div class="btn-group" role="group" aria-label="난이도 선택">
+                        <!--버튼 클릭 시 JS 함수 호출-->
+                        <button type="button" onclick="setAndSubmit('HARD', this)" class="btn btn-outline-success">상</button>
+                        <button type="button" onclick="setAndSubmit('MEDIUM', this)" class="btn btn-outline-success">중</button>
+                        <button type="button" onclick="setAndSubmit('EASY', this)" class="btn btn-outline-success">하</button>
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">시</label>
-                    <input type="text" name="durationHr" class="form-control" placeholder="hr">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">분</label>
-                    <input type="text" name="durationMin" class="form-control" placeholder="min">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">초</label>
-                    <input type="text" name="durationS" class="form-control" placeholder="sec">
+                <!-- Duration (시/분/초) 한 줄 배치 -->
+                <div class="row g-3 mb-3">
+                    <div class="col-12"><label class="form-label fw-semibold">달린 시간</label></div>
+                    <div class="col-12 col-sm-4">
+                        <div class="input-group">
+                            <input type="text" name="durationHr" class="form-control">
+                            <span class="input-group-text">시</span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4">
+                        <div class="input-group">
+                            <input type="text" name="durationMin" class="form-control">
+                            <span class="input-group-text">분</span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4">
+                        <div class="input-group">
+                            <input type="text" name="durationS" class="form-control">
+                            <span class="input-group-text">초</span>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">평균 심박수</label>
-                    <input type="text" name="heartRateAvg" class="form-control" placeholder="BPM">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">최대 심박수</label>
-                    <input type="text" name="heartRateMax" class="form-control" placeholder="BPM">
+                <!-- Heart Rate -->
+                <div class="row g-3 mb-3">
+                    <div class="col-12 col-md-6">
+                        <label class="form-label fw-semibold">평균 심박수</label>
+                        <div class="input-group">
+                            <input type="text" name="heartRateAvg" class="form-control">
+                            <span class="input-group-text">BPM</span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label fw-semibold">최대 심박수</label>
+                        <div class="input-group">
+                            <input type="text" name="heartRateMax" class="form-control">
+                            <span class="input-group-text">BPM</span>
+                        </div>
+                    </div>
                 </div>
 
+                <!-- Description -->
                 <div class="mb-3">
-                    <label class="form-label">메모</label>
-                    <textarea name="description" class="form-control" rows="3"></textarea>
+                    <label class="form-label fw-semibold">메모</label>
+                    <textarea name="description" class="form-control" rows="3"
+                              placeholder="오늘 달릴 때 기분은 어땠나요? 작은 발자국이 모여 큰 걸음이 됩니다. 작은 기록을 모아 나의 러닝을 완성해보세요."></textarea>
                 </div>
 
                 <div class="mb-3">
                     <button type="submit" class="btn btn-primary">Submit</button>
                     <button type="reset" class="btn btn-secondary">Reset</button>
-                    <a th:href="@{/board/list}">
+                    <a th:href="@{/route/list}">
                         <button type="button" class="btn btn-info">List</button>
                     </a>
                 </div>

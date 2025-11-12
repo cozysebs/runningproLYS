@@ -50,7 +50,6 @@
 
         <!--게시판 목록보기-->
         <div class="card-body">
-            <div class="card-title mb-2">게시판 목록보기</div>
 
             <!--인기순 || 최신순 정렬-->
             <div class="mb-3 d-flex gap-2">
@@ -58,33 +57,36 @@
               <button type="button" class="btn btn-outline-secondary me-2 sortBtn" data-sort="latest">최신순</button>
             </div>
 
-            <!--/*            <table class="table table-striped">*/-->
-            <!--/*                <thead>*/-->
-            <!--/*                <tr>*/-->
-            <!--/*                    <th scope="col">Title</th>*/-->
-            <!--/*                    <th scope="col">CreatedDate</th>*/-->
-            <!--/*                </tr>*/-->
-            <!--/*                </thead>*/-->
-            <!--/*                <tbody>*/-->
-            <!--/*                <tr th:each="route:${responseDTO.dtoList}">*/-->
-            <!--/*                    <td>*/-->
-            <!--/*                        <a th:href="|@{/route/read(id=${route.id},mode=1)}&${pageRequestDTO.getLink()}|">[[${route.title}]]</a>*/-->
-            <!--/*                    </td>*/-->
-            <!--/*                    <td th:text="${#temporals.format(route.createdDate, 'yyyy-MM-dd HH:mm:dd')}"></td>*/-->
-            <!--/*                </tr>*/-->
-            <!--/*                </tbody>*/-->
-            <!--/*            </table>*/-->
+            <div class="route-wrap">
+                <div class="route-grid">
+                    <a class="route-card"
+                        th:each="route:${responseDTO.dtoList}"
+                        th:href="|@{/route/read(id=${route.id},mode=1)}&${pageRequestDTO.getLink()}|">
 
-            <div class="route-grid">
-                <a class="route-card"
-                    th:each="route:${responseDTO.dtoList}"
-                    th:href="|@{/route/read(id=${route.id},mode=1)}&${pageRequestDTO.getLink()}|">
-
-                    <!--맵 이미지-->
-                    <div class="route-thumb">
-                        <span>코스 이미지</span>
-                    </div>
-                </a>
+                        <!--맵 이미지-->
+                        <div class="route-thumb map-thumb"
+                             th:attr="data-lat=${route.lat},
+                                      data-lng=${route.lng},
+                                      data-path=${route.routePath}">
+                        </div>
+                        <!--본문-->
+                        <div class="route-meta">
+                            <h5 class="route-title" th:text="${route.title}">코스 제목</h5>
+                            <div class="route-row">
+                                <span class="label">지역</span>
+                                <span class="value" th:text="${route.address}">부산광역시 남구</span>
+                            </div>
+                            <div class="route-row">
+                                <span class="label">거리</span>
+                                <span class="value" th:text="${#numbers.formatDecimal(route.distance/1000.0, 1, 1)} + 'km'">7.3km</span>
+                            </div>
+                            <div class="route-row">
+                                <span class="label">난이도</span>
+                                <span class="value" th:text="${route.difficulty}">MEDIUM</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
             </div>
 
             <!--페이지 버튼-->
@@ -202,4 +204,67 @@
             // keyword는 기본 reset 동작으로 지워짐
         });
     });
+
+    // 카드 내부 지도 초기화
+    function initThumbMap(el) {
+        const lat = parseFloat(el.dataset.lat) || 37.566826;
+        const lng = parseFloat(el.dataset.lng) || 126.9786567;
+        const pathJson = el.dataset.path || "[]";
+
+        const map = new kakao.maps.Map(el, {
+            center: new kakao.maps.LatLng(lat, lng),
+            level: 5,
+            draggable: false,
+            scrollwheel: false
+        });
+
+        let coords = [];
+        try { coords = JSON.parse(pathJson); } catch (e) { /* ignore */ }
+
+        if (Array.isArray(coords) && coords.length >= 2) {
+            const latlngs = coords.map(p => new kakao.maps.LatLng(p.lat, p.lng));
+            new kakao.maps.Polyline({
+                map,
+                path: latlngs,
+                strokeWeight: 3,
+                strokeColor: '#db4040',
+                strokeOpacity: 1,
+                strokeStyle: 'solid'
+            });
+
+            const bounds = new kakao.maps.LatLngBounds();
+            latlngs.forEach(ll => bounds.extend(ll));
+            map.setBounds(bounds);
+        }
+    }
+
+    // 뷰포트에 들어올 때만 초기화 (지연 로딩)
+    function setupThumbMaps() {
+        const els = document.querySelectorAll('.map-thumb');
+        if (!('IntersectionObserver' in window)) {
+            els.forEach(initThumbMap);
+            return;
+        }
+        const io = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    initThumbMap(entry.target);
+                    io.unobserve(entry.target);
+                }
+            });
+        }, { rootMargin: '200px' });
+        els.forEach(el => io.observe(el));
+    }
+
+    // Kakao SDK 로드 완료 후 실행
+    if (window.kakao && kakao.maps && kakao.maps.load) {
+        kakao.maps.load(setupThumbMaps);
+    } else {
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.kakao && kakao.maps && kakao.maps.load) {
+                kakao.maps.load(setupThumbMaps);
+            }
+        });
+    }
+
 </script>

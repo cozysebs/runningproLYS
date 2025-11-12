@@ -38,6 +38,71 @@
         #difficultyGroup .btn.active,
         #difficultyGroup .btn:hover { background:#198754; color:#fff; border-color:#198754; }
 
+        /*리스트 스타일 지정*/
+        /* 목록 전체 폭 제한: 너무 넓어져도 3열 유지 */
+        .route-wrap{
+            max-width: 1140px;   /* 필요하면 1080~1200 사이로 조절 */
+            margin: 0 auto;
+            padding: 0 8px;
+        }
+        .route-grid{
+            display:grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr)); /* 기본 3열 */
+            gap: 24px;
+            align-items: stretch;
+        }
+        @media (max-width: 1200px){ /* 화면이 줄면 2열 */
+            .route-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (max-width: 640px){  /* 더 줄면 1열 */
+            .route-grid{ grid-template-columns: 1fr; }
+        }
+        .map-thumb { aspect-ratio: 16 / 9; }
+        .route-card{
+            display:flex;
+            flex-direction:column;
+            text-decoration:none;
+            border:1px solid #e5e7eb;          /* gray-200 */
+            border-radius:16px;
+            overflow:hidden;
+            background:#fff;
+            box-shadow:0 2px 6px rgba(0,0,0,.04);
+            transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+        }
+        .route-card:hover{
+            transform: translateY(-2px);
+            box-shadow:0 6px 18px rgba(0,0,0,.08);
+            border-color:#d1d5db;               /* gray-300 */
+        }
+        .route-thumb{
+            height:140px;
+            background:#eef2ff;                 /* indigo-50 */
+            display:flex;align-items:center;justify-content:center;
+            color:#6366f1;                       /* indigo-500 */
+            font-weight:600;
+            letter-spacing:.02em;
+        }
+        .route-meta{ padding:14px 14px 16px; }
+        .route-title{
+            margin:0 0 8px 0;
+            font-size:1.05rem;
+            font-weight:700;
+            color:#111827;                       /* gray-900 */
+            line-height:1.25rem;
+        }
+        .route-row{
+            display:flex; gap:8px;
+            font-size:.92rem; line-height:1.2rem;
+            padding:4px 0;
+        }
+        .route-row .label{
+            min-width:40px;
+            color:#6b7280;                       /* gray-500 */
+        }
+        .route-row .value{
+            color:#374151;                       /* gray-700 */
+        }
+
         /*정렬 버튼 css*/
         .sortBtn.active,
         .sortBtn:hover {
@@ -45,6 +110,7 @@
             color: #fff;
             border-color: #6c757d;
         }
+
     </style>
     <!-- Kakao 지도 API 불러오기 -->
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=bef6c0af0c16eb930b44c3b94a75c1c1&libraries=services"></script>
